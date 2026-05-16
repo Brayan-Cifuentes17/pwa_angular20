@@ -1,0 +1,4 @@
+.selected-fav {
+  border-color: var(--neon-purple) !important;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+}

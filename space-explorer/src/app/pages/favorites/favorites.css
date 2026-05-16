@@ -1,0 +1,4 @@
+.active-filter {
+  background: rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.25);
+}

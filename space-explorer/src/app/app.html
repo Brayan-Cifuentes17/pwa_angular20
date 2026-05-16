@@ -1,0 +1,12 @@
+<nav class="space-navbar d-flex align-items-center justify-content-between">
+  <a routerLink="/apod" class="nav-brand">⬡ SPACE EXPLORER</a>
+  <div class="nav-links">
+    <a routerLink="/apod"      routerLinkActive="active">APOD</a>
+    <a routerLink="/mars"      routerLinkActive="active">MARS</a>
+    <a routerLink="/favorites" routerLinkActive="active">FAVORITOS</a>
+    <a routerLink="/notes"     routerLinkActive="active">NOTAS</a>
+  </div>
+</nav>
+<main class="container-fluid px-4 py-4">
+  <router-outlet></router-outlet>
+</main>

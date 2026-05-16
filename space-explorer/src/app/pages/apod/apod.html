@@ -1,0 +1,84 @@
+<div class="page-enter">
+  <div class="mb-4">
+    <p class="section-title">NASA API</p>
+    <h2 class="section-heading">Astronomy Picture of the Day</h2>
+  </div>
+
+  <!-- Formulario búsqueda -->
+  <div class="space-card p-4 mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.05em;">
+          SELECCIONA FECHA
+        </label>
+        <input type="date"
+               class="form-control space-input"
+               [max]="today"
+               [(ngModel)]="selectedDate"
+               (ngModelChange)="selectedDate.set($event)">
+      </div>
+      <div class="col-auto">
+        <button class="btn-neon" (click)="search()">BUSCAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border space-spinner" role="status"></div>
+      <p class="mt-3" style="color: var(--text-muted); font-family: 'Orbitron', monospace; font-size: 0.8rem;">
+        CONECTANDO CON LA NASA...
+      </p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="space-card p-3 mb-4" style="border-color: rgba(239,68,68,0.4);">
+      <span style="color: #ef4444;">⚠ {{ error() }}</span>
+    </div>
+  }
+
+  <!-- Resultado -->
+  @if (apod() && !loading()) {
+    <div class="space-card p-4 animate__animated animate__fadeIn">
+      <div class="row g-4">
+        <div class="col-md-7">
+          @if (apod()!.media_type === 'image') {
+            <img [src]="apod()!.url" [alt]="apod()!.title" class="apod-img">
+          } @else {
+            <iframe [src]="apod()!.url" class="apod-img" style="height:400px;" frameborder="0"></iframe>
+          }
+        </div>
+        <div class="col-md-5 d-flex flex-column">
+          <div class="d-flex gap-2 mb-3">
+            <span class="badge-space">{{ apod()!.date }}</span>
+            @if (apod()!.copyright) {
+              <span class="badge-space" style="border-color: rgba(168,85,247,0.4); color: var(--neon-purple);">
+                © {{ apod()!.copyright }}
+              </span>
+            }
+          </div>
+          <h3 style="color: var(--text-primary); font-size: 1.3rem; font-weight: 700;">
+            {{ apod()!.title }}
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; flex: 1; overflow-y: auto; max-height: 300px;">
+            {{ apod()!.explanation }}
+          </p>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn-neon btn-neon-purple" (click)="saveFavorite()">★ GUARDAR FAVORITO</button>
+            @if (apod()!.hdurl) {
+              <a [href]="apod()!.hdurl" target="_blank" class="btn-neon" style="text-decoration:none;">↗ HD</a>
+            }
+          </div>
+          @if (savedMsg()) {
+            <p class="mt-2 animate__animated animate__fadeIn" style="color: #4ade80; font-size: 0.8rem;">
+              ✓ {{ savedMsg() }}
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

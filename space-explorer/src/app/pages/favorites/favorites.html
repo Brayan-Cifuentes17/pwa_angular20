@@ -1,0 +1,43 @@
+<div class="page-enter">
+  <div class="mb-4">
+    <p class="section-title">LOCAL — INDEXEDDB</p>
+    <h2 class="section-heading">Mis Favoritos</h2>
+  </div>
+
+  <!-- Filtros -->
+  <div class="d-flex gap-2 mb-4">
+    <button class="btn-neon" [class.active-filter]="filter() === 'all'" (click)="filter.set('all')">TODOS</button>
+    <button class="btn-neon" [class.active-filter]="filter() === 'apod'" (click)="filter.set('apod')">APOD</button>
+    <button class="btn-neon" [class.active-filter]="filter() === 'mars'" (click)="filter.set('mars')">MARS</button>
+  </div>
+
+  @if (!favorites().length) {
+    <div class="space-card p-5 text-center">
+      <p style="font-family:'Orbitron',monospace;font-size:2rem;color:var(--border-glow);">★</p>
+      <p style="color:var(--text-muted);">No tienes favoritos guardados aún.</p>
+      <p style="color:var(--text-muted);font-size:0.85rem;">Guarda imágenes desde APOD o Mars.</p>
+    </div>
+  }
+
+  <div class="fav-grid">
+    @for (fav of filtered; track fav.id) {
+      <div class="space-card fav-card animate__animated animate__fadeIn">
+        <img [src]="fav.imageUrl" [alt]="fav.title" (error)="$any($event.target).src='https://via.placeholder.com/300x180/0a0a1a/00d4ff?text=No+Image'">
+        <div class="p-3">
+          <div class="d-flex gap-2 mb-2">
+            <span class="badge-space" [style.border-color]="fav.type === 'apod' ? 'rgba(168,85,247,0.4)' : 'rgba(0,212,255,0.3)'"
+                  [style.color]="fav.type === 'apod' ? 'var(--neon-purple)' : 'var(--neon-cyan)'">
+              {{ fav.type | uppercase }}
+            </span>
+            <span class="badge-space">{{ fav.date }}</span>
+          </div>
+          <h6 style="color:var(--text-primary);font-size:0.9rem;line-height:1.3;min-height:40px;">{{ fav.title }}</h6>
+          <p style="color:var(--text-muted);font-size:0.75rem;">Guardado: {{ formatDate(fav.savedAt) }}</p>
+          <button class="btn-neon btn-neon-danger w-100 mt-1" style="font-size:0.7rem;padding:0.3rem;" (click)="remove(fav.id!)">
+            ELIMINAR
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

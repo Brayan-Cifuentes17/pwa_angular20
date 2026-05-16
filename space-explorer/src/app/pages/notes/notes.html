@@ -1,0 +1,86 @@
+<div class="page-enter">
+  <div class="mb-4">
+    <p class="section-title">LOCAL — INDEXEDDB</p>
+    <h2 class="section-heading">Notas sobre Favoritos</h2>
+  </div>
+
+  @if (!favorites().length) {
+    <div class="space-card p-5 text-center">
+      <p style="color:var(--text-muted);">Primero guarda imágenes como favoritos.</p>
+    </div>
+  } @else {
+    <div class="row g-4">
+      <!-- Lista de favoritos -->
+      <div class="col-md-4">
+        <p class="section-title mb-2">IMÁGENES GUARDADAS</p>
+        <div class="d-flex flex-column gap-2">
+          @for (fav of favorites(); track fav.id) {
+            <div class="space-card p-3 d-flex gap-3 align-items-center"
+                 [class.selected-fav]="selectedFav()?.id === fav.id"
+                 style="cursor:pointer;" (click)="selectFav(fav)">
+              <img [src]="fav.imageUrl" style="width:60px;height:45px;object-fit:cover;border-radius:6px;flex-shrink:0;"
+                   (error)="$any($event.target).src='https://via.placeholder.com/60x45/0d1b2a/00d4ff?text=IMG'">
+              <div style="overflow:hidden;">
+                <p style="color:var(--text-primary);font-size:0.8rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  {{ fav.title }}
+                </p>
+                <p style="color:var(--text-muted);font-size:0.7rem;margin:0;">{{ fav.date }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="col-md-8">
+        @if (selectedFav()) {
+          <div class="space-card p-4">
+            <h5 style="color:var(--neon-cyan);font-family:'Orbitron',monospace;font-size:0.9rem;margin-bottom:1rem;">
+              {{ selectedFav()!.title }}
+            </h5>
+
+            <!-- Nueva nota -->
+            <div class="mb-4">
+              <textarea class="form-control space-input note-textarea mb-2"
+                        placeholder="Escribe una nota sobre esta imagen..."
+                        [(ngModel)]="newNoteText"
+                        (ngModelChange)="newNoteText.set($event)"></textarea>
+              <button class="btn-neon" (click)="addNote()" [disabled]="!newNoteText().trim()">
+                + AGREGAR NOTA
+              </button>
+            </div>
+
+            <!-- Lista de notas -->
+            @if (!notes().length) {
+              <p style="color:var(--text-muted);font-size:0.85rem;">Sin notas aún. ¡Agrega una!</p>
+            }
+            @for (note of notes(); track note.id) {
+              <div class="space-card p-3 mb-3" style="border-color:rgba(168,85,247,0.2);">
+                @if (editingNote()?.id === note.id) {
+                  <textarea class="form-control space-input note-textarea mb-2"
+                            [(ngModel)]="editingNote()!.text"
+                            (ngModelChange)="editingNote()!.text = $event"></textarea>
+                  <div class="d-flex gap-2">
+                    <button class="btn-neon" (click)="saveEdit()">GUARDAR</button>
+                    <button class="btn-neon btn-neon-danger" (click)="editingNote.set(null)">CANCELAR</button>
+                  </div>
+                } @else {
+                  <p style="color:var(--text-primary);margin:0 0 0.5rem;white-space:pre-wrap;font-size:0.9rem;">
+                    {{ note.text }}
+                  </p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span style="color:var(--text-muted);font-size:0.75rem;">{{ formatDate(note.updatedAt) }}</span>
+                    <div class="d-flex gap-2">
+                      <button class="btn-neon btn-neon-purple" style="padding:0.2rem 0.6rem;font-size:0.65rem;" (click)="startEdit(note)">EDITAR</button>
+                      <button class="btn-neon btn-neon-danger" style="padding:0.2rem 0.6rem;font-size:0.65rem;" (click)="deleteNote(note.id!)">✕</button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
