@@ -39,6 +39,24 @@ export class MarsPage {
   async search() {
     this.loading.set(true);
     this.error.set('');
+
+    const start = new Date(this.startDate());
+    const end = new Date(this.endDate());
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays > 7) {
+      this.error.set('La API de la NASA solo permite consultar un máximo de 7 días. Por favor, reduce el rango de fechas.');
+      this.loading.set(false);
+      return;
+    }
+
+    if (diffDays < 0) {
+      this.error.set('La fecha final no puede ser anterior a la fecha inicial.');
+      this.loading.set(false);
+      return;
+    }
+
     try {
       const res = await this.nasa.getNeoFeed(this.startDate(), this.endDate());
       const all: NeoObject[] = [];
@@ -50,7 +68,7 @@ export class MarsPage {
       this.neos.set(all);
       this.totalCount.set(res.element_count);
     } catch {
-      this.error.set('Error al consultar la API de asteroides.');
+      this.error.set('Error al consultar la API de asteroides. Verifica tu conexión o el formato de las fechas.');
     } finally {
       this.loading.set(false);
     }
